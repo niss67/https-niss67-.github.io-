@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <link rel="stylesheet" href="Simulador.css">
+  <meta http-equiv="CONTENT-TYPE" content="text/html; charset=UTF-8">
+  <title>SIMULADOR DE CARGAS</title>
+</head>
+<body>
+  <h1> SIMULADOR DE CARGAS </h1>
+  <!--  <button class="my inicio">INICIAR</button> -->
+  
+  <div class="dropdown">
+    <button class="my menu dropdown-button"> MENU </button>
+    <div id="myDropdown" class="dropdown-content">
+      <a href="Simulador_cargas.html">SIMULADOR CAMPO ELECTRICO</a>
+      <a href="hola.html"> SIMULADOR DE CARGAS</a>     
+              <a href="informacion.html">INFORMACIÓN</a>
+              <a href="guia.html">Guía del proyecto</a>
+             <a href="calcu.html">CALCULADORA</a>
+    </div>
+  </div>
+
+  <script>
+  function toggleDropdown() {
+    document.getElementById("myDropdown").classList.toggle("show");
+  }
+
+  window.onclick = function(event) {
+    if (!event.target.matches('.dropdown-button')) {
+      var dropdowns = document.getElementsByClassName("dropdown-content");
+      var i;
+      for (i = 0; i < dropdowns.length; i++) {
+        var openDropdown = dropdowns[i];
+        if (openDropdown.classList.contains('show')) {
+          openDropdown.classList.remove('show');
+        }
+      }
+    }
+  </script>
+
+</body>
+</html>
