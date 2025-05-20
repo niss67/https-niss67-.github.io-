@@ -1,0 +1,20 @@
+body{
+  color: white;
+  background-color: black;
+}
+h1{
+  font-size: 50px;
+  font-family: Monaco;
+  color: bisque;
+}
+h2{
+  font-size: 40px;
+  font-family: Monaco;
+  color: chocolate;
+}
+
+h3{
+  font-size: 30px;
+  font-family: Monaco;
+  color: cadetblue;
+}

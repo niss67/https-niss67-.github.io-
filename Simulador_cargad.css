@@ -1,0 +1,27 @@
+
+body {
+    font-family: sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    color: white;
+    background-color: black;
+}
+
+#controles, #informacion {
+    margin-top: 20px;
+    padding: 15px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    text-align: center;
+}
+
+#lista-cargas {
+    list-style: none;
+    padding: 0;
+}
+
+#lista-cargas li {
+    margin-bottom: 5px;
+}
+

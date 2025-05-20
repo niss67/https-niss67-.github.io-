@@ -1,0 +1,72 @@
+body{
+  background-color: black;
+}
+
+h1{
+  font-size: 70px;
+  font-family: Monaco;
+  color: darkblue;
+}
+.my{
+  border: none; 
+  color: azure; 
+  padding: 15px 30px; 
+  cursor: pointer; 
+  border-radius: 90px;
+}
+
+.inicio{
+  margin-top: 30px;
+  margin-left: 69px;
+  font-size: 50px;
+  background-color: black; border: 2px solid #007bff;} 
+.inicio:hover {background: #0b7dda; color: black;}
+
+
+.menu{
+  margin-top: 30px;
+  margin-left: 87px;
+  font-size: 50px;
+  background-color: black; border: 2px solid #8B008B;} 
+.menu:hover {background: #9932CC; color: black;}
+
+
+.dropdown {
+  position: relative; /* Necesario para posicionar el contenido desplegable */
+  display: inline-block; /* Para que el botón y el contenido se comporten como un bloque en línea */
+}
+
+.dropdown-button {
+  background-color: black;
+  color: white;
+  padding: 10px 20px;
+  cursor: pointer;
+  border: 2px solid #8B008B;
+  cursor: pointer;
+  border-radius: 90px;
+  font-size: 50px;
+}
+
+.dropdown-content {
+  display: none; /* Oculta el contenido desplegable por defecto */
+  position: absolute; /* Lo posiciona relativamente al contenedor .dropdown */
+  background-color: #f9f9f9;
+  min-width: 160px;
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  z-index: 1; /* Asegura que el menú esté por encima de otros elementos */
+}
+
+.dropdown-content a {
+  color: black;
+  padding: 12px 16px;
+  text-decoration: none;
+  display: block; /* Hace que cada enlace ocupe una línea completa */
+}
+
+.dropdown-content a:hover {
+  background-color: #ddd; /* Cambia el color al pasar el ratón sobre las opciones */
+}
+
+.dropdown:hover .dropdown-content {
+  display: block; /* Muestra el contenido al pasar el ratón sobre el contenedor .dropdown */
+}

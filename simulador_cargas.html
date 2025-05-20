@@ -1,0 +1,37 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Simulador de Cargas Eléctricas</title>
+    <link rel="stylesheet" href="Simulador_cargad.css">
+</head>
+<body>
+    <h1>Simulador de Cargas Eléctricas</h1>
+
+    <canvas id="lienzo" width="600" height="400" style="border:1px solid #000;"></canvas>
+
+    <div id="controles">
+    <h2>Controles</h2>
+    <label>Tipo de Carga:</label>
+    <label for="positiva">Positiva (+)</label>
+    <input type="radio" id="positiva" name="tipo-carga" value="1" checked>
+    <label for="negativa">Negativa (-)</label>
+    <input type="radio" id="negativa" name="tipo-carga" value="-1">
+    <br><br>
+    <button id="agregar-carga-click">Agregar Carga (Clic en el Lienzo)</button>
+    <p>Haz clic en el lienzo para colocar la nueva carga.</p>
+    <label for="carga-valor">Magnitud de la Carga:</label>
+    <input type="number" id="carga-valor" value="1">
+    <br><br>
+    <button id="mostrar-campo">Mostrar Campo Eléctrico</button>
+</div>
+
+    <div id="informacion">
+        <h2>Información</h2>
+        <ul id="lista-cargas"></ul>
+        <p id="campo-en-punto"></p>
+    </div>
+
+    <script src="Simulador_cargas.js"></script>
+</body>
+</html>

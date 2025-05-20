@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simulador de Cargas Eléctricas</title>
+    <style>
+        body { font-family: sans-serif; display: flex; }
+        #lienzo { border: 1px solid #000; cursor: grab; }
+        #grafica { border: 1px solid #777; margin-left: 20px; }
+    </style>
+</head>
+<body>
+    <canvas id="lienzo" width="400" height="400"></canvas>
+    <canvas id="grafica" width="300" height="200"></canvas>
+
+    <script>
+        const lienzo = document.getElementById('lienzo');
+        const ctx = lienzo.getContext('2d');
+        const graficaCanvas = document.getElementById('grafica');
+        const graficaCtx = graficaCanvas.getContext('2d');
+
+        const constanteCoulomb = 8.9875e9;
+        let cargas = [
+            { id: 1, x: 150, y: 200, valor: 1e-6, color: 'red' },   // Carga positiva
+            { id: 2, x: 250, y: 200, valor: -1e-6, color: 'blue' }  // Carga negativa
+        ];
+        let cargaSeleccionada = null;
+        let offsetX, offsetY;
+        let distancia = 0;
+        let fuerza = 0;
+        let datosGrafica = [];
+        const maxDatosGrafica = 50;
+
+        function dibujarCarga(carga) {
+            ctx.beginPath();
+            ctx.arc(carga.x, carga.y, Math.abs(carga.valor) * 1e5 + 5, 0, Math.PI * 2);
+            ctx.fillStyle = carga.color;
+            ctx.fill();
+            ctx.closePath();
+        }
+
+        function dibujarSimulacion() {
+            ctx.clearRect(0, 0, lienzo.width, lienzo.height);
+            cargas.forEach(dibujarCarga);
+            if (cargas.length >= 2) {
+                const carga1 = cargas[0];
+                const carga2 = cargas[1];
+                const dx = carga2.x - carga1.x;
+                const dy = carga2.y - carga1.y;
+                distancia = Math.sqrt(dx * dx + dy * dy) / 100; // Convertir a metros (escala arbitraria)
+                if (distancia > 0) {
+                    fuerza = constanteCoulomb * carga1.valor * carga2.valor / (distancia * distancia);
+                } else {
+                    fuerza = 0;
+                }
+            }
+            dibujarInfo();
+        }
+
+        function dibujarInfo() {
+            ctx.fillStyle = 'black';
+            ctx.font = '14px sans-serif';
+            ctx.fillText(`Distancia: ${distancia.toFixed(3)} m`, 10, 20);
+            ctx.fillText(`Fuerza: ${fuerza.toExponential(2)} N`, 10, 40);
+        }
+
+        function iniciarArrastre(event) {
+            const mouseX = event.clientX !== undefined ? event.clientX - lienzo.getBoundingClientRect().left : event.touches[0].clientX - lienzo.getBoundingClientRect().left;
+            const mouseY = event.clientY !== undefined ? event.clientY - lienzo.getBoundingClientRect().top : event.touches[0].clientY - lienzo.getBoundingClientRect().top;
+
+            for (let i = cargas.length - 1; i >= 0; i--) {
+                const carga = cargas[i];
+                const distanciaCarga = Math.sqrt((mouseX - carga.x) ** 2 + (mouseY - carga.y) ** 2);
+                if (distanciaCarga < Math.abs(carga.valor) * 1e5 + 10) {
+                    cargaSeleccionada = i;
+                    offsetX = mouseX - carga.x;
+                    offsetY = mouseY - carga.y;
+                    lienzo.style.cursor = 'grabbing';
+                    break;
+                }
+            }
+        }
+
+        function arrastrar(event) {
+            if (cargaSeleccionada !== null) {
+                const mouseX = event.clientX !== undefined ? event.clientX - lienzo.getBoundingClientRect().left : event.touches[0].clientX - lienzo.getBoundingClientRect().left;
+                const mouseY = event.clientY !== undefined ? event.clientY - lienzo.getBoundingClientRect().top : event.touches[0].clientY - lienzo.getBoundingClientRect().top;
+                cargas[cargaSeleccionada].x = mouseX - offsetX;
+                cargas[cargaSeleccionada].y = mouseY - offsetY;
+                dibujarSimulacion();
+                actualizarGrafica();
+            }
+        }
+
+        function detenerArrastre() {
+            cargaSeleccionada = null;
+            lienzo.style.cursor = 'grab';
+        }
+
+        // Event listeners para el movimiento de las cargas
+        lienzo.addEventListener('mousedown', iniciarArrastre);
+        lienzo.addEventListener('mousemove', arrastrar);
+        lienzo.addEventListener('mouseup', detenerArrastre);
+        lienzo.addEventListener('mouseout', detenerArrastre);
+
+        lienzo.addEventListener('touchstart', iniciarArrastre);
+        lienzo.addEventListener('touchmove', arrastrar);
+        lienzo.addEventListener('touchend', detenerArrastre);
+        lienzo.addEventListener('touchcancel', detenerArrastre);
+
+        // Graficación de Fuerza vs Distancia
+        function dibujarGrafica() {
+            graficaCtx.clearRect(0, 0, graficaCanvas.width, graficaCanvas.height);
+            graficaCtx.fillStyle = 'black';
+            graficaCtx.font = '10px sans-serif';
+
+            // Márgenes
+            const margenX = 30;
+            const margenY = 20;
+            const anchoGrafica = graficaCanvas.width - 2 * margenX;
+            const altoGrafica = graficaCanvas.height - 2 * margenY;
+
+            // Encontrar los rangos de distancia y fuerza
+            let minDistancia = Infinity;
+            let maxDistancia = 0;
+            let minFuerza = Infinity;
+            let maxFuerza = -Infinity;
+
+            if (datosGrafica.length > 0) {
+                datosGrafica.forEach(punto => {
+                    minDistancia = Math.min(minDistancia, punto.distancia);
+                    maxDistancia = Math.max(maxDistancia, punto.distancia);
+                    minFuerza = Math.min(minFuerza, punto.fuerza);
+                    maxFuerza = Math.max(maxFuerza, punto.fuerza);
+                });
+
+                // Ajustar rangos si solo hay un punto
+                if (minDistancia === Infinity) minDistancia = 0.1; // Evitar división por cero
+                if (maxDistancia === 0) maxDistancia = 1;
+                if (minFuerza === Infinity) minFuerza = 0;
+                if (maxFuerza === -Infinity) maxFuerza = 1;
+            } else {
+                minDistancia = 0.1;
+                maxDistancia = 1;
+                minFuerza = 0;
+                maxFuerza = 1;
+            }
+
+            // Ejes
+            graficaCtx.beginPath();
+            graficaCtx.moveTo(margenX, graficaCanvas.height - margenY);
+            graficaCtx.lineTo(graficaCanvas.width - margenX, graficaCanvas.height - margenY); // Eje X (Distancia)
+            graficaCtx.lineTo(margenX, margenY); // Eje Y (Fuerza)
+            graficaCtx.strokeStyle = 'black';
+            graficaCtx.stroke();
+
+            // Etiquetas de los ejes
+            graficaCtx.fillText('Distancia (arb.)', graficaCanvas.width - 90, graficaCanvas.height - 5);
+            graficaCtx.fillText('Fuerza (N)', 5, margenY + 10);
+
+            // Dibujar los datos
+            graficaCtx.beginPath();
+            graficaCtx.strokeStyle = 'red';
+            for (let i = 0; i < datosGrafica.length; i++) {
+                const punto = datosGrafica[i];
+                const x = margenX + anchoGrafica * (punto.distancia - minDistancia) / (maxDistancia - minDistancia);
+                const y = graficaCanvas.height - margenY - altoGrafica * (punto.fuerza - minFuerza) / (maxFuerza - minFuerza);
+
+                if (i === 0) {
+                    graficaCtx.moveTo(x, y);
+                } else {
+                    graficaCtx.lineTo(x, y);
+                }
+                graficaCtx.fillRect(x - 1, y - 1, 2, 2); // Dibujar puntos
+            }
+            graficaCtx.stroke();
+        }
+
+        function actualizarGrafica() {
+            if (distancia > 0) {
+                datosGrafica.push({ distancia: distancia, fuerza: fuerza });
+                if (datosGrafica.length > maxDatosGrafica) {
+                    datosGrafica.shift();
+                }
+                dibujarGrafica();
+            }
+        }
+
+        // Inicialización
+        dibujarSimulacion();
+        dibujarGrafica();
+    </script>
+</body>
+</html>

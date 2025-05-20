@@ -1,0 +1,30 @@
+body{
+  color: white;
+  background-color: black;
+}
+h1{
+  font-size: 50px;
+  font-family: Monaco;
+  color: bisque;
+}
+h2{
+  font-size: 40px;
+  font-family: Monaco;
+  color: darkcyan;
+}
+h3{
+  font-size: 25px;
+  font-family: Monaco;
+  color: darkkhaki;
+}
+h4{
+  font-size: 20px;
+  font-family: Monaco;
+  color: aliceblue;
+  text-align: center;
+}
+/*p{
+  font-size: 20px;
+  font-family: Monaco;
+  color: aliceblue;
+}

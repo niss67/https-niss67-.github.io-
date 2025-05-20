@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+ 
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora de Cargas Eléctricas (Control de Signo)</title>
+    <style>
+        body { font-family: sans-serif; }
+        .calculo { margin-bottom: 20px; padding: 15px; border: 1px solid #ccc; border-radius: 5px; }
+        label { display: block; margin-bottom: 5px; }
+        input[type="number"] { width: 100px; padding: 5px; margin-bottom: 10px; }
+        .signo-selector { display: inline-block; margin-left: 10px; }
+        button { padding: 8px 15px; cursor: pointer; }
+        .resultado { margin-top: 10px; font-weight: bold; }
+        .proceso { margin-top: 5px; font-size: 0.9em; color: #777; }
+    </style>
+</head>
+<body>
+    <h1>Calculadora de Cargas Eléctricas (Control de Signo)</h1>
+
+    <div class="calculo">
+        <h2>1. Fuerza Eléctrica (Ley de Coulomb)</h2>
+        <div>
+            <label for="magnitud_q1_fuerza">Magnitud Carga 1 (C):</label>
+            <input type="number" id="magnitud_q1_fuerza" min="0">
+            <div class="signo-selector">
+                <input type="radio" id="q1_positiva_fuerza" name="signo_q1_fuerza" value="1" checked>
+                <label for="q1_positiva_fuerza">+</label>
+                <input type="radio" id="q1_negativa_fuerza" name="signo_q1_fuerza" value="-1">
+                <label for="q1_negativa_fuerza">-</label>
+            </div>
+        </div>
+        <div>
+            <label for="magnitud_q2_fuerza">Magnitud Carga 2 (C):</label>
+            <input type="number" id="magnitud_q2_fuerza" min="0">
+            <div class="signo-selector">
+                <input type="radio" id="q2_positiva_fuerza" name="signo_q2_fuerza" value="1" checked>
+                <label for="q2_positiva_fuerza">+</label>
+                <input type="radio" id="q2_negativa_fuerza" name="signo_q2_fuerza" value="-1">
+                <label for="q2_negativa_fuerza">-</label>
+            </div>
+        </div>
+        <label for="r_fuerza">Distancia (m):</label>
+        <input type="number" id="r_fuerza" min="0">
+        <button onclick="calcularFuerzaElectricaConSigno()">Calcular Fuerza</button>
+        <div id="resultado_fuerza_signo" class="resultado"></div>
+        <div id="proceso_fuerza_signo" class="proceso"></div>
+    </div>
+
+    <div class="calculo">
+        <h2>2. Campo Eléctrico de una Carga</h2>
+        <div>
+            <label for="magnitud_q_campo">Magnitud Carga (C):</label>
+            <input type="number" id="magnitud_q_campo" min="0">
+            <div class="signo-selector">
+                <input type="radio" id="q_positiva_campo" name="signo_q_campo" value="1" checked>
+                <label for="q_positiva_campo">+</label>
+                <input type="radio" id="q_negativa_campo" name="signo_q_campo" value="-1">
+                <label for="q_negativa_campo">-</label>
+            </div>
+        </div>
+        <label for="r_campo">Distancia (m):</label>
+        <input type="number" id="r_campo" min="0">
+        <button onclick="calcularCampoElectricoConSigno()">Calcular Campo</button>
+        <div id="resultado_campo_signo" class="resultado"></div>
+        <div id="proceso_campo_signo" class="proceso"></div>
+    </div>
+
+    <div class="calculo">
+        <h2>3. Potencial Eléctrico de una Carga</h2>
+        <div>
+            <label for="magnitud_q_potencial">Magnitud Carga (C):</label>
+            <input type="number" id="magnitud_q_potencial" min="0">
+            <div class="signo-selector">
+                <input type="radio" id="q_positiva_potencial" name="signo_q_potencial" value="1" checked>
+                <label for="q_positiva_potencial">+</label>
+                <input type="radio" id="q_negativa_potencial" name="signo_q_potencial" value="-1">
+                <label for="q_negativa_potencial">-</label>
+            </div>
+        </div>
+        <label for="r_potencial">Distancia (m):</label>
+        <input type="number" id="r_potencial" min="0">
+        <button onclick="calcularPotencialElectricoConSigno()">Calcular Potencial</button>
+        <div id="resultado_potencial_signo" class="resultado"></div>
+        <div id="proceso_potencial_signo" class="proceso"></div>
+    </div>
+
+    <div class="calculo">
+        <h2>4. Energía Potencial Eléctrica (Dos Cargas)</h2>
+        <div>
+            <label for="magnitud_q1_energia">Magnitud Carga 1 (C):</label>
+            <input type="number" id="magnitud_q1_energia" min="0">
+            <div class="signo-selector">
+                <input type="radio" id="q1_positiva_energia" name="signo_q1_energia" value="1" checked>
+                <label for="q1_positiva_energia">+</label>
+                <input type="radio" id="q1_negativa_energia" name="signo_q1_energia" value="-1">
+                <label for="q1_negativa_energia">-</label>
+            </div>
+        </div>
+        <div>
+            <label for="magnitud_q2_energia">Magnitud Carga 2 (C):</label>
+            <input type="number" id="magnitud_q2_energia" min="0">
+            <div class="signo-selector">
+                <input type="radio" id="q2_positiva_energia" name="signo_q2_energia" value="1" checked>
+                <label for="q2_positiva_energia">+</label>
+                <input type="radio" id="q2_negativa_energia" name="signo_q2_energia" value="-1">
+                <label for="q2_negativa_energia">-</label>
+            </div>
+        </div>
+        <label for="r_energia">Distancia (m):</label>
+        <input type="number" id="r_energia" min="0">
+        <button onclick="calcularEnergiaPotencialConSigno()">Calcular Energía Potencial</button>
+        <div id="resultado_energia_signo" class="resultado"></div>
+        <div id="proceso_energia_signo" class="proceso"></div>
+    </div>
+
+    <script>
+        const constanteCoulomb = 8.9875e9;
+
+        function calcularFuerzaElectricaConSigno() {
+            const magnitudQ1 = parseFloat(document.getElementById('magnitud_q1_fuerza').value);
+            const signoQ1 = parseInt(document.querySelector('input[name="signo_q1_fuerza"]:checked').value);
+            const q1 = magnitudQ1 * signoQ1;
+
+            const magnitudQ2 = parseFloat(document.getElementById('magnitud_q2_fuerza').value);
+            const signoQ2 = parseInt(document.querySelector('input[name="signo_q2_fuerza"]:checked').value);
+            const q2 = magnitudQ2 * signoQ2;
+
+            const r = parseFloat(document.getElementById('r_fuerza').value);
+            const resultadoDiv = document.getElementById('resultado_fuerza_signo');
+            const procesoDiv = document.getElementById('proceso_fuerza_signo');
+
+            if (isNaN(magnitudQ1) || isNaN(magnitudQ2) || isNaN(r) || r < 0) {
+                resultadoDiv.textContent = 'Por favor, ingresa valores válidos para la magnitud y una distancia no negativa.';
+                procesoDiv.textContent = '';
+                return;
+            }
+
+            const fuerza = constanteCoulomb * q1 * q2 / (r * r);
+            const signoFuerzaTexto = (fuerza > 0) ? 'de repulsión' : 'de atracción';
+            const resultado = `Fuerza: ${fuerza.toFixed(2)} N (${signoFuerzaTexto})`;
+            const proceso = `Proceso: F = k * q1 * q2 / r^2 = ${constanteCoulomb.toExponential(2)} * ${q1} * ${q2} / ${r}^2 = ${fuerza.toFixed(2)} N`;
+
+            resultadoDiv.textContent = resultado;
+            procesoDiv.textContent = proceso;
+        }
+
+        function calcularCampoElectricoConSigno() {
+            const magnitudQ = parseFloat(document.getElementById('magnitud_q_campo').value);
+            const signoQ = parseInt(document.querySelector('input[name="signo_q_campo"]:checked').value);
+            const q = magnitudQ * signoQ;
+
+            const r = parseFloat(document.getElementById('r_campo').value);
+            const resultadoDiv = document.getElementById('resultado_campo_signo');
+            const procesoDiv = document.getElementById('proceso_campo_signo');
+
+            if (isNaN(magnitudQ) || isNaN(r) || r < 0) {
+                resultadoDiv.textContent = 'Por favor, ingresa valores válidos para la magnitud y una distancia no negativa.';
+                procesoDiv.textContent = '';
+                return;
+            }
+
+            const campo = constanteCoulomb * q / (r * r);
+            const direccion = (campo > 0) ? 'hacia afuera' : 'hacia adentro';
+            const resultado = `Campo Eléctrico: ${Math.abs(campo).toFixed(2)} N/C (dirección ${direccion})`;
+            const proceso = `Proceso: E = k * q / r^2 = ${constanteCoulomb.toExponential(2)} * ${q} / ${r}^2 = ${campo.toFixed(2)} N/C`;
+
+            resultadoDiv.textContent = resultado;
+            procesoDiv.textContent = proceso;
+        }
+
+        function calcularPotencialElectricoConSigno() {
+            const magnitudQ = parseFloat(document.getElementById('magnitud_q_potencial').value);
+            const signoQ = parseInt(document.querySelector('input[name="signo_q_potencial"]:checked').value);
+            const q = magnitudQ * signoQ;
+
+            const r = parseFloat(document.getElementById('r_potencial').value);
+            const resultadoDiv = document.getElementById('resultado_potencial_signo');
+            const procesoDiv = document.getElementById('proceso_potencial_signo');
+
+            if (isNaN(magnitudQ) || isNaN(r) || r < 0) {
+                resultadoDiv.textContent = 'Por favor, ingresa valores válidos para la magnitud y una distancia no negativa.';
+                procesoDiv.textContent = '';
+                return;
+            }
+
+            const potencial = constanteCoulomb * q / r;
+            const resultado = `Potencial Eléctrico: ${potencial.toFixed(2)} V`;
+            const proceso = `Proceso: V = k * q / r = ${constanteCoulomb.toExponential(2)} * ${q} / ${r} = ${potencial.toFixed(2)} V`;
+
+            resultadoDiv.textContent = resultado;
+            procesoDiv.textContent = proceso;
+        }
+
+        function calcularEnergiaPotencialConSigno() {
+            const magnitudQ1 = parseFloat(document.getElementById('magnitud_q1_energia').value);
+            const signoQ1 = parseInt(document.querySelector('input[name="signo_q1_energia"]:checked').value);
+            const q1 = magnitudQ1 * signoQ1;
+
+            const magnitudQ2 = parseFloat(document.getElementById('magnitud_q2_energia').value);
+            const signoQ2 = parseInt(document.querySelector('input[name="signo_q2_energia"]:checked').value);
+            const q2 = magnitudQ2 * signoQ2;
+
+            const r = parseFloat(document.getElementById('r_energia').value);
+            const resultadoDiv = document.getElementById('resultado_energia_signo');
+            const procesoDiv = document.getElementById('proceso_energia_signo');
+
+            if (isNaN(magnitudQ1) || isNaN(magnitudQ2) || isNaN(r) || r < 0) {
+                resultadoDiv.textContent = 'Por favor, ingresa valores válidos para la magnitud y una distancia no negativa.';
+                procesoDiv.textContent = '';
+                return;
+            }
+
+            const energiaPotencial = constanteCoulomb * q1 * q2 / r;
+            const resultado = `Energía Potencial Eléctrica: ${energiaPotencial.toFixed(2)} J`;
+            const proceso = `Proceso: U = k * q1 * q2 / r = ${constanteCoulomb.toExponential(2)} * ${q1} * ${q2} / ${r} = ${energiaPotencial.toFixed(2)} J`;
+
+            resultadoDiv.textContent = resultado;
+        }
+    </script>
+</body>
+</html>
